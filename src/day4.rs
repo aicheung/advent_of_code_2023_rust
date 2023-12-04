@@ -71,8 +71,8 @@ fn p2(data: String) -> i32 {
             continue; //empty
         }
         line_no += 1;
+        let card_count = get_cards_for_line(line);
         for _count in 1..get_repeat_counts(line_no, &repeat_counts) + 1 {
-            let card_count = get_cards_for_line(line);
             update_repeat_counts(line_no, card_count, &mut repeat_counts);
         }
     }
