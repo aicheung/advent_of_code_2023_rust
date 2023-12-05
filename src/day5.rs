@@ -1,13 +1,14 @@
-use std::{fs, cmp::min};
+use rayon::prelude::*;
+use std::{cmp::min, fs};
 
 struct Mapping {
     start: i64,
     dest: i64,
-    length: i64
+    length: i64,
 }
 
 struct MappingList {
-    mappings: Vec<Vec<Mapping>>
+    mappings: Vec<Vec<Mapping>>,
 }
 
 impl Mapping {
@@ -44,10 +45,9 @@ fn load_map(lines: Vec<&str>, map: &mut Vec<Mapping>) {
         map.push(Mapping {
             start: src_st,
             dest: dest_st,
-            length: count
+            length: count,
         });
     }
-    
 }
 
 fn get_mapped_value(v: i64, mappings: &Vec<Mapping>) -> i64 {
@@ -65,6 +65,18 @@ fn load_seeds(line: &str, seeds: &mut Vec<i64>) {
     for n in seed_numbers {
         seeds.push(n.parse::<i64>().expect(""));
     }
+}
+
+fn get_seed_pairs(seeds: &Vec<i64>) -> Vec<(i64, i64)> {
+    let mut i = 0;
+    let mut result = Vec::new();
+    while i < seeds.len() {
+        if i % 2 != 1 {
+            result.push((seeds[i], seeds[i + 1]));
+        }
+        i += 1;
+    }
+    result
 }
 
 fn main() {
@@ -89,11 +101,11 @@ fn main() {
         } else if line.chars().next().unwrap().is_alphabetic() {
             cur_map = match line.trim() {
                 "soil-to-fertilizer map:" => &mut soil_fertilizer,
-                "fertilizer-to-water map:" =>  &mut fertilizer_water,
-                "water-to-light map:" =>  &mut water_light,
-                "light-to-temperature map:" =>  &mut light_temperature,
-                "temperature-to-humidity map:" =>  &mut temperature_humidity,
-                "humidity-to-location map:" =>  &mut humidity_location,
+                "fertilizer-to-water map:" => &mut fertilizer_water,
+                "water-to-light map:" => &mut water_light,
+                "light-to-temperature map:" => &mut light_temperature,
+                "temperature-to-humidity map:" => &mut temperature_humidity,
+                "humidity-to-location map:" => &mut humidity_location,
                 _ => {
                     println!("Should not happen or first!");
                     &mut seeds_soil
@@ -113,20 +125,58 @@ fn main() {
     assert!(soil_fertilizer.len() > 0);
     assert!(seeds_soil.len() > 0);
 
-    let mapping_list = MappingList{
+    let mapping_list = MappingList {
         mappings: vec![
-            seeds_soil, soil_fertilizer, fertilizer_water,
-            water_light, light_temperature, temperature_humidity,
-            humidity_location
-        ]
+            seeds_soil,
+            soil_fertilizer,
+            fertilizer_water,
+            water_light,
+            light_temperature,
+            temperature_humidity,
+            humidity_location,
+        ],
     };
 
     let mut min_seed = i64::MAX;
+    let seed_pairs: Vec<(i64, i64)> = get_seed_pairs(&seeds);
     for seed in seeds {
         min_seed = min(min_seed, mapping_list.apply(seed));
     }
 
     println!("p1: {}", min_seed);
+    /*
+        let mut min_seed_pair_val = i64::MAX;
+        let mut min_seed_pair = (i64::MAX, i64::MAX);
+        for pair in seed_pairs {
+            let first_val = mapping_list.apply(pair.0);
+            let last_val = mapping_list.apply(pair.0 + pair.1 - 1);
+            if first_val < min_seed_pair_val || last_val < min_seed_pair_val {
+                min_seed_pair_val = min(first_val, last_val);
+                min_seed_pair = pair;
+            }
+        }
+
+        println!("pair: {:?}", min_seed_pair);
+        let mut min_seed = i64::MAX;
+        for i in min_seed_pair.0 .. min_seed_pair.0 + min_seed_pair.1 {
+            min_seed = min(min_seed, mapping_list.apply(i));
+        }
+    */
+    /*
+        let mut min_seed = i64::MAX;
+        for p in seed_pairs {
+            for i in p.0 .. p.0 + p.1 {
+                min_seed = min(min_seed, mapping_list.apply(i));
+            }
+        }
+    */
+    let min_seed = seed_pairs
+        .par_iter() // create a parallel iterator over the seed pairs
+        .flat_map(|p| p.0..p.0 + p.1) // map each pair to a range and flatten the ranges
+        .map(|i| mapping_list.apply(i)) // apply the mapping function to each element
+        .min_by(|x, y| x.cmp(y)) // find the minimum element using the cmp method
+        .unwrap_or(i64::MAX);
+    println!("p2: {}", min_seed);
 }
 
 #[cfg(test)]
