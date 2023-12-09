@@ -299,6 +299,43 @@
             },
             "args": [],
             "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'day9'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=day9",
+                    "--package=advent_of_code_2023"
+                ],
+                "filter": {
+                    "name": "day9",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'day9'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=day9",
+                    "--package=advent_of_code_2023"
+                ],
+                "filter": {
+                    "name": "day9",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
         }
     ]
 }
