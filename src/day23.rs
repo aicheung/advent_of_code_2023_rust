@@ -226,27 +226,6 @@ fn build_graph(
     for p in points {
         graph.insert(*p, HashSet::new());
     }
-    /*
-
-    for sr, sc in points:
-    stack = [(0, sr, sc)]
-    seen = {(sr, sc)}
-
-    while stack:
-        n, r, c = stack.pop()
-
-        if n != 0 and (r, c) in points:
-            graph[(sr, sc)][(r, c)] = n
-            continue
-
-        for dr, dc in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            nr = r + dr
-            nc = c + dc
-            if 0 <= nr < len(grid) and 0 <= nc < len(grid[0]) and grid[nr][nc] != "#" and (nr, nc) not in seen:
-                stack.append((n + 1, nr, nc))
-                seen.add((nr, nc))
-     */
-
     for p in points {
         let mut s = vec![(0, *p)];
         let mut seen = HashSet::new();
@@ -276,26 +255,6 @@ fn build_graph(
             }
         }
     }
-
-    /*
-
-    for p in points {
-        for p2 in points {
-            if p == p2 {
-                continue;
-            }
-
-            let path = bfs(*p, *p2, grid, false, points);
-
-            //if path has other junstions, they are not direct
-            if !path.is_empty() {
-                let len = path.iter().next().unwrap().0 as u64;
-                graph.get_mut(&p).unwrap().insert((p2.clone(), len));
-                //graph.get_mut(&p2).unwrap().insert((p.clone(), len));
-            }
-        }
-    }
-     */
 }
 
 fn bfs_p2(
