@@ -10,6 +10,7 @@ num = "0.4.1"
 rand = "0.8.5"
 #itertools = "0.12.0"
 rayon = "1.8.0"
+z3 = {version="0.12", features = ["static-link-z3"]}
 
 [[bin]]
 name = "day1"
@@ -102,3 +103,7 @@ path = "src/day22.rs"
 [[bin]]
 name = "day23"
 path = "src/day23.rs"
+
+[[bin]]
+name = "day24"
+path = "src/day24.rs"
