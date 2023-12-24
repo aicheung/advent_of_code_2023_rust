@@ -14,18 +14,19 @@ struct Part {
 impl Part {
     fn apply(&self, workflows: &HashMap<String, Workflow>) -> WorkflowResult {
         let mut cur_wf = workflows.get(&String::from("in")).unwrap();
-
+        let out;
         loop {
             let (result, next) = cur_wf.apply(self);
 
             if result == WorkflowResult::Accept || result == WorkflowResult::Reject {
-                return result;
+                out = result;
+                break;
             }
 
             cur_wf = workflows.get(&next.unwrap()).unwrap();
         }
 
-        WorkflowResult::Reject
+        out
     }
 
     fn sum(&self, workflows: &HashMap<String, Workflow>) -> u64 {
@@ -133,7 +134,7 @@ impl Workflow {
                 Some(s.next_workflow.as_ref().unwrap().clone()),
             );
         }
-        panic!("SHOULD NOT HAPPEN!!!");
+        println!("WARNING: SHOULD NOT HAPPEN!!!");
         (WorkflowResult::Reject, None)
     }
 }
