@@ -11,6 +11,7 @@ rand = "0.8.5"
 #itertools = "0.12.0"
 rayon = "1.8.0"
 z3 = {version="0.12", features = ["static-link-z3"]}
+petgraph = "0.6.4"
 
 [[bin]]
 name = "day1"
@@ -107,3 +108,7 @@ path = "src/day23.rs"
 [[bin]]
 name = "day24"
 path = "src/day24.rs"
+
+[[bin]]
+name = "day25"
+path = "src/day25.rs"
