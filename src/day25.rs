@@ -73,7 +73,9 @@ fn p1(file: &str) -> u64 {
     
             for (_, idx_other) in n.iter() {
                 let length_to_other = *result.get(idx_other).unwrap();
-                if length_to_other > avg {
+                //optimised to just use max path for each node
+                //if it does not work on your input, use length_to_other > avg
+                if length_to_other == max {
                     //println!("{} {}", node_other, length_to_other);
                     let result = astar(&g, *first.1, |finish| finish == *idx_other, |_e| 1, |_| 0);
     
